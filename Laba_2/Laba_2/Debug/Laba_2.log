@@ -1,0 +1,3 @@
+﻿  Source.cpp
+d:\apk_projects\laba_2\laba_2\laba_2\source.cpp(33): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+  Laba_2.vcxproj -> D:\APK_Projects\Laba_2\Laba_2\Debug\Laba_2.exe
