@@ -7,8 +7,8 @@ struct VIDEO
 	unsigned char attr;
 };
 
-//void get_reg();         			//получить данные из регистров
-//void print(int offset, int);		//заполнить указатель видеоизображения
+void get_reg();         			//получить данные из регистров
+void print(int offset, int);		//заполнить указатель видеоизображения
 
 //IRQ0-7
 void interrupt(*int8) (...);// IRQ 0  - таймер		
