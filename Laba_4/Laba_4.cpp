@@ -8,7 +8,7 @@ void rnd_set(int bound) {
 	outp(0x43, 0xb4);
 	outp(0x42, bound % 255);
 	outp(0x42, (bound % 65520) >> 8);
-	outp(0x61, inp(0x61) | 1);
+	outp(0x61, inp(0x61) | 1);  // Побитовое или (|) выведит большее число
 }
 
 int rnd_get(void) {
@@ -16,7 +16,7 @@ int rnd_get(void) {
 	int i;
 	outp(0x43, 0x86);
 	i = inp(0x42);
-	i = (inp(0x42) << 8) + i;
+	i = (inp(0x42) << 8) + i; //сдвиг числа на 8 позиций влево
 
 	return (i);
 }
@@ -60,21 +60,24 @@ void devision_ratio() {
 				outp(0x43, 0x0);
 				kd_low = inp(0x40);
 				kd_high = inp(0x40);
-				kd = kd_high << 8 | kd_low;
+				kd = kd_high << 8 | kd_low; // Побитовое или (|) выведит большее число
+																		//сдвиг числа на 8 позиций влево
 				break;
 			}
 			case 1: {
 				outp(0x43, 0x40);
 				kd_low = inp(0x41);
 				kd_high = inp(0x41);
-				kd = kd_high << 8 | kd_low;
+				kd = kd_high << 8 | kd_low; // Побитовое или (|) выведит большее число
+																		//сдвиг числа на 8 позиций влево
 				break;
 			}
 			case 2: {
 				outp(0x43, 0x80);
 				kd_low = inp(0x42);
 				kd_high = inp(0x42);
-				kd = kd_high << 8 | kd_low;
+				kd = kd_high << 8 | kd_low; // Побитовое или (|) выведит большее число
+																		//сдвиг числа на 8 позиций влево
 				break;
 			}
 			}
@@ -104,7 +107,7 @@ void print_bchar(unsigned char value)
 {
 	for (int i = 0; i < sizeof(unsigned char) * 8; i++)
 	{
-		printf("%d", (value & 0x80u) >> 7);
+		printf("%d", (value & 0x80u) >> 7);//сдвиг числа на 7 позиций вправо
 		value <<= 1;
 	}
 }
@@ -132,14 +135,17 @@ void status_word()
 void set_frequence(unsigned frequence)
 {
 	unsigned result = 0;
-
+	//задаём режим канала 2 таймера
 	outp(0x43, 0xB6);
 
+
 	result = TIMER_CLOCK / frequence;
+	// Загружаем регистр счетчика таймера - сначала младший байт
 	outp(0x42, result % 256);
 
-	result /= 256;
-	outp(0x42, result);
+	//result /= 256;
+	//затем старший байты
+	outp(0x42, result >> 8);
 }
 #undef TIMER_CLOCK
 
@@ -148,11 +154,15 @@ void play_sound(unsigned int *freqs, unsigned int *delays,unsigned int *pause, u
 	for (unsigned i = 0; i < size; i++)
 	{
 		set_frequence(freqs[i]);
-
-		outp(0x61, inp(0x61) | 3);
+		// Включаем громкоговоритель. Сигнал от
+	  // канала 2 таймера теперь будет проходить
+	  // на вход громкоговорителя
+		outp(0x61, inp(0x61) | 3);// Побитовое или (|) выведит большее число
+		//длительность проигрования
 		delay(delays[i]);
+		// Выключаем громкоговоритель.
 		outp(0x61, inp(0x61) & 0xfc);
-
+		// Выполняем задержку.
 		delay(pause[i]);
 	}
 
